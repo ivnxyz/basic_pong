@@ -6,16 +6,21 @@ from ai_paddle import AIPaddle # Importar AIPaddle
 class PlayerPaddle(AIPaddle):
 
     # Método de inicialización
-    def __init__(self, screensize):
+    def __init__(self, screensize, side):
         self.screensize = screensize
-
-        # Definir centro
-        self.center_x = screensize[0] - 5
+        
         self.center_y = int(screensize[1] * 0.5)
+        
+        # Definir centro
+        if side == "left":
+            self.center_x = 5
+        elif side == "right":
+            self.center_x = screensize[0] - 5
 
         # Definir tamaño
         self.height = 70
         self.width = 10
+        
         # TODO: Ajusta el tamaño de la paleta conforme la partida avanza
         # para hacer el juego más difícil
 

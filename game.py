@@ -5,7 +5,6 @@ from pygame.locals import * # Variables para eventos
 from pong import Pong # Para nuestro Pong <3
 
 # Importar paletas
-from ai_paddle import AIPaddle
 from player_paddle import PlayerPaddle
 
 # Valores constantes
@@ -22,12 +21,10 @@ def main():
     # Crear Pong
     pong = Pong(SCREENSIZE)
     # Crear AI Paddle
-    ai_paddle = AIPaddle(SCREENSIZE)
-    player_paddle = PlayerPaddle(SCREENSIZE)
+    player1_paddle = PlayerPaddle(SCREENSIZE, "left")
+    player2_paddle = PlayerPaddle(SCREENSIZE, "right")
 
-    running = True
-
-    while running:
+    while True:
         clock.tick(64) # Limitar FPS's
 
         #Obtener eventos de pygame
@@ -36,42 +33,54 @@ def main():
             if event.type == QUIT:
                 # Salir del juego
                 pygame.quit()
-                running = False
+                quit()
             # Evaluar eventos del teclado
             if event.type == KEYDOWN:
-                # Evaluar posición e la paleta
+                # Cambiar dirección de la paleta
                 if event.key == K_UP:
-                    player_paddle.direction = -1
-                elif event.key == K_DOWN:
-                    player_paddle.direction = 1
+                    player2_paddle.direction = -1
+                if event.key == K_DOWN:
+                    player2_paddle.direction = 1
+
+                # Cambiar dirección de la paleta
+                if event.key == 119:
+                    player1_paddle.direction = -1
+                if event.key == 115:
+                    player1_paddle.direction = 1
             if event.type == KEYUP:
+                # Deneter la paleta
                 if event.key == K_UP or event.key == K_DOWN:
-                    player_paddle.direction = 0
+                    player2_paddle.direction = 0
+
+                # Detener la paleta
+                if event.key == 119 or event.key == 115:
+                    player1_paddle.direction = 0
 
         # Actualizar pong
-        ai_paddle.update(pong)
-        player_paddle.update()
-        pong.update(player_paddle, ai_paddle)
+        player1_paddle.update()
+        player2_paddle.update()
+
+        pong.update(player2_paddle, player1_paddle)
 
         # TODO: Mostrar mensaje en la pantalla
         if pong.hit_edge_left:
-            print('GANASTE!')
-            running = False
+            print("Ganó el jugador 2 (derecha)")
+            pygame.quit()
+            quit()
         elif pong.hit_edge_right:
-            print('PERDISTE!')
-            running = False
+            print("Ganó el jugador 1 (izquierda)")
+            pygame.quit()
+            quit()
 
         # Mostrar un cuadro negro en la pantalla
         screen.fill((0, 0, 0))
 
         # Mostrar Paddle
-        ai_paddle.render(screen)
-        player_paddle.render(screen)
+        player1_paddle.render(screen)
+        player2_paddle.render(screen)
         # Mostrar Pong
         pong.render(screen)
 
         pygame.display.flip() # Mostrar pantalla
-
-    pygame.quit()
 
 main()
